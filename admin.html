@@ -20,7 +20,7 @@
         <div class="card">
             <h3>Vendor Dossier</h3>
             <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <img id="admin-profile-img" src="https://via.placeholder.com/150" class="profile-img-admin" alt="Profile">
+                <img id="admin-profile-img" src="https://i.pravatar.cc/150?img=47" class="profile-img-admin" alt="Profile">
                 <div>
                     <h2 id="admin-business-name" style="margin: 0 0 0.5rem 0;">Loading...</h2>
                     <p style="margin: 0; color: var(--text-secondary);">Owner: <strong id="admin-owner-name">...</strong></p>
@@ -66,7 +66,15 @@
             </div>
             
             <hr style="border-color: #334155; margin: 1.5rem 0;">
-            
+            <hr style="border-color: #334155; margin: 1.5rem 0;">
+
+            <h3>Hardware Assignment & Onboarding</h3>
+            <form id="onboard-form" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <input type="text" id="new-owner-name" placeholder="Owner Name" required style="padding: 0.75rem; border-radius: 8px; background: #334155; border: none; color: white;">
+                <input type="text" id="new-business-name" placeholder="Business Name" required style="padding: 0.75rem; border-radius: 8px; background: #334155; border: none; color: white;">
+                <input type="text" id="new-device-id" placeholder="Hardware MAC (e.g., ESP32_B2C3)" required style="padding: 0.75rem; border-radius: 8px; background: #334155; border: none; color: white;">
+                <button type="submit" class="btn-outline">Register & Pair Hardware</button>
+            </form>
             <h3>Squad API Disbursal</h3>
             <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Target Account: <span id="admin-squad-acc">...</span></p>
             <input type="number" id="loan-amount-input" placeholder="Enter Loan Amount (₦)" style="width: 90%; padding: 0.75rem; margin-bottom: 1rem; border-radius: 8px; border: none; background: #334155; color: white;">
@@ -74,6 +82,6 @@
         </div>
 
     </div>
-    <script src="js/app.js" type="module"></script>
+    <script src="task.js" type="module"></script>
 </body>
 </html>
