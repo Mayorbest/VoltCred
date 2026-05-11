@@ -30,6 +30,17 @@
             </div>
 
             <hr style="border-color: #334155; margin: 1.5rem 0;">
+            <h3>Repayment Tracking</h3>
+        <div style="background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Outstanding Balance:</span>
+                <strong id="admin-outstanding-balance">₦0</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Account Status:</span>
+                <span id="admin-loan-status" class="kyc-badge kyc-verified">On Track</span>
+            </div>
+        </div>
 
             <h3>Identity Verification (KYC)</h3>
             <div style="background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
@@ -51,10 +62,18 @@
             <p style="color: var(--text-secondary); font-size: 0.9rem;">
                 Assigned IoT Node: <code style="color: var(--accent-blue);">ESP32_A1B2</code>
             </p>
+
         </div>
 
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
+
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #334155;">
+        <button id="btn-kill-switch" class="btn-squad" style="background-color: var(--warning-red); width: 100%;">
+            🛑 SHUT DOWN NODE (KILL SWITCH)
+        </button>
+    </div>
+
                 <h3>Live Telemetry</h3>
                 <span id="ai-flag-status" style="color: var(--trust-green); font-weight: bold;">Clear</span>
             </div>

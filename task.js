@@ -4,8 +4,8 @@ import { TrustEngine } from './trace.js';
 const engine = new TrustEngine();
 
 // Hardcoded for the hackathon demo
-const vendorId = "user_001";
-const deviceId = "ESP32_A1B2";
+let currentVendorId = "user_001";
+let currentDeviceId = "ESP32_A1B2";
 
 // --- DOM Elements (Borrower UI) ---
 const profileImgEl = document.getElementById('profile-img');
@@ -30,9 +30,11 @@ const liveI = document.getElementById('live-i');
 const liveW = document.getElementById('live-w');
 const aiFlagStatus = document.getElementById('ai-flag-status');
 
-// 1. Fetch User Profile & KYC Data
-listenToNode(`users/${vendorId}`, (user) => {
-    if (user && user.profile) {
+
+function loadDashboardData(vId, dId) {
+    // 1. Fetch User Profile & KYC Data
+    listenToNode(`users/${vId}`, (user) => {
+        if (user && user.profile) {
         const p = user.profile;
         
         // Populate Borrower Page if elements exist
@@ -75,11 +77,11 @@ listenToNode(`users/${vendorId}`, (user) => {
             }
         }
     }
-});
+    });
 
-// 2. Fetch Live Hardware Telemetry & Anomaly Detection
-listenToNode(`devices/${deviceId}/liveData`, (data) => {
-    if (data) {
+    // 2. Fetch Live Hardware Telemetry
+    listenToNode(`devices/${dId}/liveData`, (data) => {
+       if (data) {
         // Update Admin telemetry
         if (liveV && liveI && liveW) {
             liveV.innerText = `${data.voltage} V`;
@@ -106,7 +108,12 @@ listenToNode(`devices/${deviceId}/liveData`, (data) => {
             }
         }
     }
-});
+    });
+}
+
+// Immediately call the function when the page loads with the default user
+loadDashboardData(currentVendorId, currentDeviceId);
+
 
 // 3. UI Testing Mode: Squad API Mock
 const disburseBtn = document.getElementById('btn-admin-disburse');
@@ -124,7 +131,6 @@ if (disburseBtn) {
     });
 }
 
-// --- Add to the bottom of app.js ---
 import { db } from './auth.js'; // Ensure db is exported from firebase.js
 import { ref, set } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
@@ -161,5 +167,111 @@ if (onboardForm) {
             console.error("Registration failed:", error);
             alert("Error registering vendor.");
         });
+    });
+}
+
+// 4. REPAYMENT & TRACKING LOGIC
+const borrowerTotalLoan = document.getElementById('borrower-total-loan');
+const borrowerAmountPaid = document.getElementById('borrower-amount-paid');
+const borrowerDailyDue = document.getElementById('borrower-daily-due');
+const repaymentCard = document.getElementById('repayment-card');
+const btnMockPay = document.getElementById('btn-mock-pay');
+
+const adminOutstanding = document.getElementById('admin-outstanding-balance');
+const adminLoanStatus = document.getElementById('admin-loan-status');
+
+// Fetch and display financial data
+listenToNode(`users/${currentVendorId}/financials`, (finance) => {
+    if (finance) {
+        const outstanding = finance.activeLoan - finance.amountPaid;
+
+        // Update Borrower UI
+        if (borrowerTotalLoan) {
+            borrowerTotalLoan.innerText = `₦${finance.activeLoan.toLocaleString()}`;
+            borrowerAmountPaid.innerText = `₦${finance.amountPaid.toLocaleString()}`;
+            borrowerDailyDue.innerText = `₦${finance.dailyTarget.toLocaleString()}`;
+            
+            if (finance.status === "default") {
+                repaymentCard.style.borderTopColor = "var(--warning-red)";
+                borrowerDailyDue.style.color = "var(--warning-red)";
+            } else {
+                repaymentCard.style.borderTopColor = "var(--accent-blue)";
+                borrowerDailyDue.style.color = "white";
+            }
+        }
+
+        // Update Admin UI
+        if (adminOutstanding) {
+            adminOutstanding.innerText = `₦${outstanding.toLocaleString()}`;
+            
+            if (finance.status === "default") {
+                adminLoanStatus.innerText = "DEFAULTED";
+                adminLoanStatus.className = "kyc-badge kyc-pending";
+            } else {
+                adminLoanStatus.innerText = "On Track";
+                adminLoanStatus.className = "kyc-badge kyc-verified";
+            }
+        }
+    }
+});
+
+// Simulate the borrower making a payment
+if (btnMockPay) {
+    btnMockPay.addEventListener('click', () => {
+        const originalText = btnMockPay.innerText;
+        btnMockPay.innerText = "Processing...";
+        
+        // Fetch current paid amount, add the daily target to it, and push to Firebase
+        listenToNode(`users/${currentVendorId}/financials`, (finance) => {
+            if(finance && btnMockPay.innerText === "Processing...") {
+                const newTotalPaid = finance.amountPaid + finance.dailyTarget;
+                
+                // Update Firebase (this will instantly update both screens)
+                update(ref(db, `users/${currentVendorId}/financials`), {
+                    amountPaid: newTotalPaid,
+                    status: "on_track" // Reset status if they were defaulted
+                }).then(() => {
+                    alert(`Payment of ₦${finance.dailyTarget} successful!`);
+                    btnMockPay.innerText = originalText;
+                });
+            }
+        });
+    });
+}
+
+// ==========================================
+// 5. THE HARDWARE KILL SWITCH
+// ==========================================
+const btnKillSwitch = document.getElementById('btn-kill-switch');
+let isNodeActive = true; // Default state
+
+// Listen for the current relay state from Firebase
+listenToNode(`devices/${currentDeviceId}/relayState`, (state) => {
+    if (btnKillSwitch) {
+        if (state === 1) {
+            isNodeActive = true;
+            btnKillSwitch.innerText = "🛑 SHUT DOWN NODE";
+            btnKillSwitch.style.backgroundColor = "var(--warning-red)";
+        } else {
+            isNodeActive = false;
+            btnKillSwitch.innerText = "⚡ RESTORE POWER";
+            btnKillSwitch.style.backgroundColor = "var(--trust-green)";
+        }
+    }
+});
+
+if (btnKillSwitch) {
+    btnKillSwitch.addEventListener('click', () => {
+        const newState = isNodeActive ? 0 : 1; // Toggle state
+        const confirmMsg = isNodeActive ? "WARNING: Cut power to this vendor's equipment?" : "Restore power to this vendor?";
+        
+        if(confirm(confirmMsg)) {
+            // Push the new command to Firebase
+            import('https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js').then(({ ref, set }) => {
+                set(ref(db, `devices/${currentDeviceId}/relayState`), newState)
+                    .then(() => console.log("Command sent to hardware!"))
+                    .catch(err => alert("Failed to send command."));
+            });
+        }
     });
 }

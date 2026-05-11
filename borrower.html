@@ -56,6 +56,25 @@
             </div>
         </div>
 
+        <div class="card" style="margin-bottom: 1.5rem; border-top: 4px solid var(--accent-blue);" id="repayment-card">
+    <h3 style="margin-top: 0; color: var(--text-secondary);">Active Loan Status</h3>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+        <span>Total Loan:</span>
+        <strong id="borrower-total-loan">₦0</strong>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+        <span>Amount Paid:</span>
+        <strong id="borrower-amount-paid" style="color: var(--trust-green);">₦0</strong>
+    </div>
+    
+    <div style="background: #0f172a; padding: 1rem; border-radius: 8px; text-align: center;">
+        <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Today's Installment Due</p>
+        <h2 id="borrower-daily-due" style="margin: 0.5rem 0;">₦2,500</h2>
+        <button id="btn-mock-pay" class="btn-outline" style="width: 100%; margin-top: 0.5rem; background: var(--trust-green); color: white; border: none;">Simulate Payment via Squad</button>
+    </div>
+</div>
+
         <div class="card">
             <button id="btn-request-loan" class="btn-squad">Request Working Capital</button>
         </div>
