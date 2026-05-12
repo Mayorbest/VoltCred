@@ -1,0 +1,45 @@
+{
+  "users": {
+    "user_001": {
+      "profile": {
+        "ownerName": "Basira Ahmed",
+        "businessName": "Iya Basira Tailoring",
+        "businessType": "Fashion & Textiles",
+        "location": "Shop 42, Tejuosho Market, Yaba",
+        "homeAddress": "14 Alara St, Sabo Yaba, Lagos",
+        "phone": "+234 801 234 5678",
+        "profilePicUrl": "https://i.pravatar.cc/150?img=47",
+        "ninDocumentUrl": "https://firebasestorage.googleapis.com/.../dummy-nin.jpg",
+        "kycVerified": true
+      },
+      "assignedDevice": "ESP32_A1B2",
+      "trustMetrics": {
+        "score": 85,
+        "statusColor": "green",
+        "anomalyFlag": false
+      },
+      "financials": {
+        "activeLoan": 0,
+        "squadVirtualAccount": "1029384756"
+      }
+    }
+  },
+  "devices": {
+    "ESP32_A1B2": {
+      "status": "online",
+      "liveData": {
+        "voltage": 230.5,
+        "current": 2.1,
+        "power": 484.05
+      },
+      "relayState": 1
+    }
+  },
+    "financials": {
+    "activeLoan": 50000,
+    "amountPaid": 10000,
+    "dailyTarget": 2500,
+    "status": "on_track", 
+    "squadVirtualAccount": "1029384756"
+  }
+}
