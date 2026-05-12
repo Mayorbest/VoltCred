@@ -1,160 +1,142 @@
-<<<<<<< HEAD
-/* main.css */
 :root {
-    --bg-slate: #0F172A;
-    --surface-card: #1E293B;
-    --accent-blue: #0EA5E9;
-    --trust-green: #10B981;
-    --warning-red: #F43F5E;
-    --squad-magenta: #900B3E; /* Sponsor Accent */
-    --text-primary: #F8FAFC;
-    --text-secondary: #CBD5E1;
-    --font-main: 'Inter', system-ui, sans-serif;
+    --bg-main: #020617; 
+    --surface: #0f172a; 
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-blue: #0ea5e9;
+    --gradient-primary: linear-gradient(135deg, #10b981, #059669); /* Green gradient for borrower */
+    --trust-green: #10b981;
+    --warning-red: #ef4444;
+    --border-color: #1e293b;
 }
 
-body {
-    background-color: var(--bg-slate);
-    color: var(--text-primary);
-    font-family: var(--font-main);
+* {
+    box-sizing: border-box;
     margin: 0;
-    padding: 2rem;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Centers the entire app vertically and horizontally on large screens */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
+    align-items: center;
+    padding: 2rem;
 }
 
-.dashboard-container {
+/* --- DESKTOP GRID LAYOUT --- */
+.borrower-wrapper {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px;
     display: grid;
+    grid-template-columns: 1fr 1fr; /* Split exactly 50/50 on desktop */
+    gap: 2rem;
+    align-items: stretch;
+}
+
+/* Left Column / Right Column Containers */
+.col-left, .col-right {
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
 }
 
 .card {
-    background-color: var(--surface-card);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.btn-squad {
-    background-color: var(--squad-magenta);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    width: 100%;
-}
-
-.btn-squad:hover { opacity: 0.9; }
-.btn-squad:disabled {
-    background-color: #475569;
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-/* Profile Elements */
-.profile-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; text-align: left; }
-.profile-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); }
-.profile-img-admin { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
-.icon-text { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; margin: 0.5rem 0; }
-.svg-icon { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
-
-/* KYC Badges & Buttons */
-.kyc-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-.kyc-verified { background: rgba(16, 185, 129, 0.2); color: var(--trust-green); border: 1px solid var(--trust-green); }
-.kyc-pending { background: rgba(244, 63, 94, 0.2); color: var(--warning-red); border: 1px solid var(--warning-red); }
-
-.btn-outline { 
-    background: transparent; 
-    border: 1px solid var(--accent-blue); 
-    color: var(--accent-blue); 
-    padding: 0.5rem 1rem; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: 0.2s; 
-    font-size: 0.9rem;
-}
-=======
-/* main.css */
-:root {
-    --bg-slate: #0F172A;
-    --surface-card: #1E293B;
-    --accent-blue: #0EA5E9;
-    --trust-green: #10B981;
-    --warning-red: #F43F5E;
-    --squad-magenta: #900B3E; /* Sponsor Accent */
-    --text-primary: #F8FAFC;
-    --text-secondary: #CBD5E1;
-    --font-main: 'Inter', system-ui, sans-serif;
-}
-
-body {
-    background-color: var(--bg-slate);
-    color: var(--text-primary);
-    font-family: var(--font-main);
-    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
     padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    height: 100%; /* Forces cards to stretch and fill space */
+}
+
+/* --- PROFILE ELEMENTS --- */
+.profile-header {
     display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-blue);
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+}
+
+.icon-text {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 1rem 0;
+}
+
+.svg-icon {
+    width: 18px;
+    height: 18px;
+    fill: var(--accent-blue);
+    flex-shrink: 0;
+}
+
+/* --- TRUST RING ANIMATION --- */
+#trust-indicator {
+    width: 160px; 
+    height: 160px; 
+    border-radius: 50%; 
+    border: 8px solid var(--trust-green); 
+    margin: 2rem auto; 
+    display: flex; 
+    align-items: center; 
     justify-content: center;
+    font-size: 1.2rem; 
+    font-weight: 800; 
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    transition: all 0.5s ease;
 }
 
-.dashboard-container {
-    width: 100%;
-    max-width: 1200px;
-    display: grid;
-    gap: 1.5rem;
-}
-
-.card {
-    background-color: var(--surface-card);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
+/* --- BUTTONS --- */
 .btn-squad {
-    background-color: var(--squad-magenta);
+    background: var(--gradient-primary);
     color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    padding: 1.25rem;
+    border-radius: 12px;
     width: 100%;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    transition: transform 0.2s;
 }
 
-.btn-squad:hover { opacity: 0.9; }
-.btn-squad:disabled {
-    background-color: #475569;
-    cursor: not-allowed;
-    opacity: 0.5;
+.btn-squad:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-squad:disabled { background: var(--border-color); color: var(--text-muted); box-shadow: none; cursor: not-allowed; }
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--trust-green);
+    color: var(--trust-green);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
 }
+.btn-outline:hover { background: rgba(16, 185, 129, 0.1); }
 
-/* Profile Elements */
-.profile-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; text-align: left; }
-.profile-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); }
-.profile-img-admin { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
-.icon-text { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; margin: 0.5rem 0; }
-.svg-icon { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
-
-/* KYC Badges & Buttons */
-.kyc-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-.kyc-verified { background: rgba(16, 185, 129, 0.2); color: var(--trust-green); border: 1px solid var(--trust-green); }
-.kyc-pending { background: rgba(244, 63, 94, 0.2); color: var(--warning-red); border: 1px solid var(--warning-red); }
-
-.btn-outline { 
-    background: transparent; 
-    border: 1px solid var(--accent-blue); 
-    color: var(--accent-blue); 
-    padding: 0.5rem 1rem; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: 0.2s; 
-    font-size: 0.9rem;
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 800px) {
+    body { padding: 1rem; align-items: flex-start; }
+    .borrower-wrapper { grid-template-columns: 1fr; /* Stacks vertically on phones */ }
+    .card { padding: 1.5rem; height: auto; }
 }
->>>>>>> 6ed571b3afd89b0599d6e541ec4b06eed0996bea
-.btn-outline:hover { background: rgba(14, 165, 233, 0.1); }
