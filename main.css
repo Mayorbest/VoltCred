@@ -55,6 +55,38 @@ h3 {
     padding-bottom: 0.75rem;
 }
 
+/* --- ADMIN STRUCTURAL LAYOUT CLASSES --- */
+.profile-header-admin { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; }
+.profile-details h2 { margin: 0 0 0.5rem 0; font-size: 1.6rem; }
+.profile-details p { margin: 0.35rem 0; color: var(--text-muted); font-size: 0.95rem; }
+
+.divider { border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0; }
+
+.dark-box { background: #070f1e; padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05); }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-gap { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.split-margin { margin-bottom: 1.25rem; }
+
+.file-upload-label { cursor: pointer; display: inline-block; }
+.file-upload-label input { display: none; }
+
+.node-assignment { color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; }
+.highlight-code { color: var(--accent-blue); background: rgba(14, 165, 233, 0.1); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: monospace; }
+
+.status-clear { color: var(--trust-green); font-weight: bold; font-size: 1.1rem; }
+.text-muted { color: var(--text-muted); }
+.text-danger { color: var(--warning-red); }
+
+.telemetry-box { background: #000; padding: 1.5rem; border-radius: 12px; font-family: monospace; font-size: 1.3rem; margin: 1rem 0 1.5rem 0; border: 1px solid var(--border-color); }
+.telemetry-box p { margin: 0.75rem 0; }
+
+.kill-switch-container { margin-bottom: 1.5rem; }
+.btn-danger { background: var(--gradient-danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+.btn-danger:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5); }
+
+.form-column { display: flex; flex-direction: column; gap: 0.75rem; }
+.target-account-text { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+
 /* --- BUTTONS --- */
 button {
     cursor: pointer;
