@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* main.css */
 :root {
     --bg-slate: #0F172A;
@@ -76,4 +77,84 @@ body {
     transition: 0.2s; 
     font-size: 0.9rem;
 }
+=======
+/* main.css */
+:root {
+    --bg-slate: #0F172A;
+    --surface-card: #1E293B;
+    --accent-blue: #0EA5E9;
+    --trust-green: #10B981;
+    --warning-red: #F43F5E;
+    --squad-magenta: #900B3E; /* Sponsor Accent */
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --font-main: 'Inter', system-ui, sans-serif;
+}
+
+body {
+    background-color: var(--bg-slate);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: var(--surface-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-squad {
+    background-color: var(--squad-magenta);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+}
+
+.btn-squad:hover { opacity: 0.9; }
+.btn-squad:disabled {
+    background-color: #475569;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Profile Elements */
+.profile-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; text-align: left; }
+.profile-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); }
+.profile-img-admin { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; }
+.icon-text { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; margin: 0.5rem 0; }
+.svg-icon { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+
+/* KYC Badges & Buttons */
+.kyc-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+.kyc-verified { background: rgba(16, 185, 129, 0.2); color: var(--trust-green); border: 1px solid var(--trust-green); }
+.kyc-pending { background: rgba(244, 63, 94, 0.2); color: var(--warning-red); border: 1px solid var(--warning-red); }
+
+.btn-outline { 
+    background: transparent; 
+    border: 1px solid var(--accent-blue); 
+    color: var(--accent-blue); 
+    padding: 0.5rem 1rem; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    font-size: 0.9rem;
+}
+>>>>>>> 6ed571b3afd89b0599d6e541ec4b06eed0996bea
 .btn-outline:hover { background: rgba(14, 165, 233, 0.1); }
