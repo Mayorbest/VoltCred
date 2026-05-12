@@ -24,6 +24,8 @@ const borrowerAmountPaid = document.getElementById('borrower-amount-paid');
 const borrowerDailyDue = document.getElementById('borrower-daily-due');
 const repaymentCard = document.getElementById('repayment-card');
 const btnMockPay = document.getElementById('btn-mock-pay');
+const adminTrustScore = document.getElementById('admin-trust-score');
+const adminTrustStatus = document.getElementById('admin-trust-status');
 
 // Admin UI
 const adminProfileImg = document.getElementById('admin-profile-img');
@@ -89,6 +91,20 @@ function loadDashboardData(vId, dId) {
                 } else {
                     kycStatus.innerText = "Pending";
                     kycStatus.className = "kyc-badge kyc-pending";
+                }
+                // Handle Admin Trust Score UI
+                const score = user.trustMetrics.score;
+                if (adminTrustScore) {
+                    adminTrustScore.innerText = `${score} / 100`;
+                    if (score >= 80) {
+                        adminTrustScore.style.color = "var(--trust-green)";
+                        adminTrustStatus.innerText = "Eligible";
+                        adminTrustStatus.className = "kyc-badge kyc-verified";
+                    } else {
+                        adminTrustScore.style.color = "var(--warning-red)";
+                        adminTrustStatus.innerText = "High Risk";
+                        adminTrustStatus.className = "kyc-badge kyc-pending";
+                    }
                 }
             }
         }
