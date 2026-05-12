@@ -28,6 +28,7 @@ export class TrustEngine {
             trustScorePenalty: 0
         };
     }
+}
 export class TrustEngine {
     constructor() {
         this.baselinePower = 0;
