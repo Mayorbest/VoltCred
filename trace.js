@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 export class TrustEngine {
     constructor() {
         this.baselinePower = 0;
@@ -29,7 +28,6 @@ export class TrustEngine {
             trustScorePenalty: 0
         };
     }
-=======
 export class TrustEngine {
     constructor() {
         this.baselinePower = 0;
@@ -60,5 +58,4 @@ export class TrustEngine {
             trustScorePenalty: 0
         };
     }
->>>>>>> 6ed571b3afd89b0599d6e541ec4b06eed0996bea
 }
