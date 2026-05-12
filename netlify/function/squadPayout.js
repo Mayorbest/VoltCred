@@ -1,5 +1,4 @@
 // netlify/functions/squadPayout.js
-
 exports.handler = async (event) => {
     // 1. Only allow POST requests
     if (event.httpMethod !== 'POST') {
