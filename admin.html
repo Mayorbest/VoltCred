@@ -10,88 +10,90 @@
         
         <div class="card">
             <h3>Vendor Dossier</h3>
-            <div>
+            
+            <div class="profile-header-admin">
                 <img id="admin-profile-img" src="https://i.pravatar.cc/150?img=47" class="profile-img-admin" alt="Profile">
-                <div>
-                    <h2 id="admin-business-name" style="margin: 0 0 0.5rem 0;">Loading...</h2>
+                <div class="profile-details">
+                    <h2 id="admin-business-name">Loading...</h2>
                     <p>Owner: <strong id="admin-owner-name">...</strong></p>
                     <p>Phone: <span id="admin-phone">...</span></p>
                     <p>Location: <span id="admin-location">...</span></p>
                 </div>
             </div>
 
-            <hr>
+            <hr class="divider">
+            
             <h3>Repayment Tracking</h3>
-        <div>
-            <div>
-                <span>Outstanding Balance:</span>
-                <strong id="admin-outstanding-balance">₦0</strong>
+            <div class="dark-box">
+                <div class="flex-between split-margin">
+                    <span>Outstanding Balance:</span>
+                    <strong id="admin-outstanding-balance">₦0</strong>
+                </div>
+                <div class="flex-between">
+                    <span>Account Status:</span>
+                    <span id="admin-loan-status" class="kyc-badge kyc-verified">On Track</span>
+                </div>
             </div>
-            <div>
-                <span>Account Status:</span>
-                <span id="admin-loan-status" class="kyc-badge kyc-verified">On Track</span>
-            </div>
-        </div>
 
             <h3>Identity Verification (KYC)</h3>
-            <div>
-                <div>
+            <div class="dark-box">
+                <div class="flex-between split-margin">
                     <span>National Identity Number (NIN)</span>
                     <span class="kyc-badge kyc-verified" id="kyc-status">Verified</span>
                 </div>
                 
-                <div>
+                <div class="flex-gap">
                     <button class="btn-outline" onclick="window.open('https://firebasestorage.googleapis.com/.../dummy-nin.jpg', '_blank')">View Document</button>
-                    
-                    <label class="btn-outline" style="cursor: pointer;">
+                    <label class="btn-outline file-upload-label">
                         Upload File
-                        <input type="file" style="display: none;" id="kyc-upload-input" accept="image/*,.pdf">
+                        <input type="file" id="kyc-upload-input" accept="image/*,.pdf">
                     </label>
                 </div>
             </div>
             
-            <p>
-                Assigned IoT Node: <code>ESP32_A1B2</code>
+            <p class="node-assignment">
+                Assigned IoT Node: <code class="highlight-code">ESP32_A1B2</code>
             </p>
-
         </div>
 
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #334155;">
-        <button id="btn-kill-switch" class="btn-squad" style="background-color: var(--warning-red); width: 100%;">
-            🛑 SHUT DOWN NODE (KILL SWITCH)
-        </button>
-    </div>
-
+            <div class="flex-between">
                 <h3>Live Telemetry</h3>
-                <span id="ai-flag-status" style="color: var(--trust-green); font-weight: bold;">Clear</span>
+                <span id="ai-flag-status" class="status-clear">Clear</span>
             </div>
             
-            <div>
-                <p>Voltage: <span id="live-v">0.0 V</span></p>
-                <p>Current: <span id="live-i">0.0 A</span></p>
-                <p>Power: <span id="live-w">0.00 W</span></p>
+            <div class="telemetry-box">
+                <p>Voltage: <span id="live-v" class="text-muted">0.0 V</span></p>
+                <p>Current: <span id="live-i" class="text-muted">0.0 A</span></p>
+                <p>Power: <span id="live-w" class="text-danger">0.00 W</span></p>
+            </div>
+
+            <div class="kill-switch-container">
+                <button id="btn-kill-switch" class="btn-squad btn-danger">
+                    🛑 SHUT DOWN NODE (KILL SWITCH)
+                </button>
             </div>
             
-            <hr>
-            <hr>
+            <hr class="divider">
 
             <h3>Hardware Assignment & Onboarding</h3>
-            <form id="onboard-form">
+            <form id="onboard-form" class="form-column">
                 <input type="text" id="new-owner-name" placeholder="Owner Name" required>
                 <input type="text" id="new-business-name" placeholder="Business Name" required>
                 <input type="text" id="new-device-id" placeholder="Hardware MAC (e.g., ESP32_B2C3)" required>
-                <button type="submit" class="btn-outline">Register & Pair Hardware</button>
+                <button type="submit" class="btn-outline" style="margin-top: 0.5rem;">Register & Pair Hardware</button>
             </form>
+            
+            <hr class="divider">
+
             <h3>Squad API Disbursal</h3>
-            <p font-size: 0.9rem; margin-bottom: 1rem;">Target Account: <span id="admin-squad-acc">...</span></p>
+            <p class="target-account-text">Target Account: <span id="admin-squad-acc">...</span></p>
             <input type="number" id="loan-amount-input" placeholder="Enter Loan Amount (₦)">
             <button class="btn-squad" id="btn-admin-disburse">Disburse via Squad</button>
         </div>
 
     </div>
+    
     <script src="task.js" type="module"></script>
 </body>
 </html>
