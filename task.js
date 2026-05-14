@@ -142,7 +142,9 @@ function loadDashboardData(vId, dId) {
     // C. Fetch Repayment Data
     listenToNode(`users/${vId}/financials`, (finance) => {
         if (finance) {
-            const outstanding = finance.activeLoan - finance.amountPaid;
+            const active = Number(finance.activeLoan) || 0;
+            const paid = Number(finance.amountPaid) || 0;
+            const outstanding = active - paid;
 
             // Update Borrower UI
             if (borrowerTotalLoan) {
