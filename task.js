@@ -222,23 +222,35 @@ if (onboardForm) {
     onboardForm.addEventListener('submit', (e) => {
         e.preventDefault(); 
         
+        // 1. Grab all the data from the new HTML inputs
         const owner = document.getElementById('new-owner-name').value;
         const business = document.getElementById('new-business-name').value;
+        const phoneVal = document.getElementById('new-phone').value;
+        const locationVal = document.getElementById('new-location').value;
         const deviceId = document.getElementById('new-device-id').value;
+        const kycChecked = document.getElementById('new-kyc-status').checked;
+        
         const newUserId = "user_" + Math.floor(Math.random() * 10000);
 
+        // 2. Save it directly to Firebase
         set(ref(db, `users/${newUserId}`), {
             profile: {
                 ownerName: owner,
                 businessName: business,
-                phone: "Pending",
-                location: "Pending Installation",
-                profilePicUrl: "https://i.pravatar.cc/150?img=47",
-                kycVerified: false
+                phone: phoneVal,              // No longer "Pending"
+                location: locationVal,        // No longer "Pending Installation"
+                profilePicUrl: "https://i.pravatar.cc/150?img=" + Math.floor(Math.random() * 70), // Random profile pic
+                kycVerified: kycChecked       // Tied to the checkbox!
             },
             assignedDevice: deviceId,
-            trustMetrics: { score: 0, statusColor: "red", anomalyFlag: false },
-            financials: { activeLoan: 0, amountPaid: 0, dailyTarget: 0, status: "on_track", squadVirtualAccount: "Pending" }
+            trustMetrics: { score: 50, statusColor: "yellow", anomalyFlag: false }, // Start new users at 50/100
+            financials: { 
+                activeLoan: 0, 
+                amountPaid: 0, 
+                dailyTarget: 0, 
+                status: "on_track", 
+                squadVirtualAccount: "1029384756" // Hardcoded Squad Sandbox account so you can test disbursals instantly!
+            }
         }).then(() => {
             alert(`Vendor ${business} successfully registered and paired to ${deviceId}!`);
             
