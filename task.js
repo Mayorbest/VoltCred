@@ -46,6 +46,30 @@ const loanAmountInput = document.getElementById('loan-amount-input');
 const btnKillSwitch = document.getElementById('btn-kill-switch');
 const onboardForm = document.getElementById('onboard-form');
 
+// Setup the Live Graph
+const ctx = document.getElementById('telemetryChart').getContext('2d');
+const liveChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [], // Time stamps go here
+        datasets: [{
+            label: 'Live Power Consumption (Watts)',
+            borderColor: '#0ea5e9',
+            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+            data: [], // Power numbers go here
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        animation: false, // Turn off animation for snappy live updates
+        scales: {
+            x: { display: false }, // Hide the messy timestamps
+            y: { beginAtZero: true, grid: { color: '#1e293b' } }
+        }
+    }
+});
 // ==========================================
 // 3. CORE DASHBOARD LOADER
 // ==========================================
@@ -119,6 +143,18 @@ function loadDashboardData(vId, dId) {
                 liveW.innerText = `${data.power} W`;
             }
 
+            // --- NEW: UPDATE THE GRAPH ---
+            const timeNow = new Date().toLocaleTimeString();
+            liveChart.data.labels.push(timeNow);
+            liveChart.data.datasets[0].data.push(data.power);
+
+            // Keep the graph from getting too long (only show last 20 seconds)
+            if (liveChart.data.labels.length > 10) {
+                liveChart.data.labels.shift();
+                liveChart.data.datasets[0].data.shift();
+            }
+            liveChart.update();
+            
             const analysis = engine.analyzeLiveTelemetry(data.power);
             
             if (analysis.isAnomaly) {
