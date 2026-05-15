@@ -8,6 +8,7 @@ const engine = new TrustEngine();
 // Global Variables
 let currentVendorId = "user_001";
 let currentDeviceId = "ESP32_A1B2";
+let currentMaxLoan = 0;
 
 // 2. DOM ELEMENTS
 // Borrower UI
@@ -137,41 +138,48 @@ function loadDashboardData(vId, dId) {
     // B. Fetch Live Hardware Telemetry
     listenToNode(`devices/${dId}/liveData`, (data) => {
         if (data) {
-            if (liveV && liveI && liveW) {
-                liveV.innerText = `${data.voltage} V`;
-                liveI.innerText = `${data.current} A`;
-                liveW.innerText = `${data.power} W`;
-            }
+            // 1. Update your UI numbers and Graph here...
+            if (liveV) liveV.innerText = `${data.voltage} V`;
+            if (liveI) liveI.innerText = `${data.current} A`;
+            if (liveW) liveW.innerText = `${data.power} W`;
 
-            // --- NEW: UPDATE THE GRAPH ---
-            const timeNow = new Date().toLocaleTimeString();
-            liveChart.data.labels.push(timeNow);
-            liveChart.data.datasets[0].data.push(data.power);
+            // 2. We need the user's current score from Firebase to feed the engine
+            listenToNode(`users/${vId}/trustMetrics`, (metrics) => {
+                if (metrics) {
+                    // 3. Run the AI Engine!
+                    const analysis = engine.analyzeLiveTelemetry(data.power, metrics.score);
+                    
+                    // NEW: Save the limit to global memory so the button can check it
+                    currentMaxLoan = analysis.maxEligibleLoan; 
+                    
+                    // 4. Update the Max Loan UI
+                    const maxLoanEl = document.getElementById('admin-max-loan');
+                    if (maxLoanEl) {
+                        maxLoanEl.innerText = `₦${analysis.maxEligibleLoan.toLocaleString()}`;
+                    }
 
-            // Keep the graph from getting too long (only show last 20 seconds)
-            if (liveChart.data.labels.length > 10) {
-                liveChart.data.labels.shift();
-                liveChart.data.datasets[0].data.shift();
-            }
-            liveChart.update();
-            
-            const analysis = engine.analyzeLiveTelemetry(data.power);
-            
-            if (analysis.isAnomaly) {
-                if (aiFlagStatus) {
-                    aiFlagStatus.innerText = "FLAGGED";
-                    aiFlagStatus.style.color = "var(--warning-red)";
+                    // 5. If the score changed, push the new score back to Firebase
+                    if (analysis.updatedScore !== metrics.score || analysis.isAnomaly !== metrics.anomalyFlag) {
+                        update(ref(db, `users/${vId}/trustMetrics`), {
+                            score: analysis.updatedScore,
+                            anomalyFlag: analysis.isAnomaly
+                        });
+                    }
+
+                    // 6. Handle the UI Flags based on the engine's verdict
+                    if (analysis.isAnomaly) {
+                        if (aiFlagStatus) {
+                            aiFlagStatus.innerText = "FLAGGED";
+                            aiFlagStatus.style.color = "var(--warning-red)";
+                        }
+                    } else {
+                        if (aiFlagStatus) {
+                            aiFlagStatus.innerText = "Clear";
+                            aiFlagStatus.style.color = "var(--trust-green)";
+                        }
+                    }
                 }
-                if (trustIndicatorEl) {
-                    trustIndicatorEl.style.borderColor = "var(--warning-red)";
-                    trustIndicatorEl.innerText = "Score Paused";
-                }
-            } else {
-                if (aiFlagStatus) {
-                    aiFlagStatus.innerText = "Clear";
-                    aiFlagStatus.style.color = "var(--trust-green)";
-                }
-            }
+            });
         }
     });
 
@@ -272,9 +280,10 @@ if (onboardForm) {
 // ==========================================
 if (disburseBtn) {
     disburseBtn.addEventListener('click', async () => {
-        const amount = loanAmountInput ? loanAmountInput.value : 0;
+        const amount = loanAmountInput ? Number(loanAmountInput.value) : 0;
         const targetAccount = adminSquadAcc ? adminSquadAcc.innerText : "";
 
+        // 1. Basic validation
         if (!amount || amount <= 0) {
             alert("Please enter a valid loan amount.");
             return;
@@ -284,9 +293,17 @@ if (disburseBtn) {
             return;
         }
 
+        // 2. THE FAIL-SAFE (AI Limit Check)
+        if (amount > currentMaxLoan) {
+            alert(`🛑 DISBURSAL BLOCKED: The requested amount (₦${amount.toLocaleString()}) exceeds the vendor's AI-approved limit of ₦${currentMaxLoan.toLocaleString()}.`);
+            return; // Kill the process instantly
+        }
+
+        // 3. Proceed with Squad API Call
         const originalText = disburseBtn.innerText;
         disburseBtn.innerText = "Initiating Transfer...";
         disburseBtn.disabled = true;
+
 
         try {
             const response = await fetch('/.netlify/functions/squadPayout', {
