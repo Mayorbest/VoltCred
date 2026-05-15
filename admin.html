@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>VoltCred | Admin Control</title>
     <link rel="stylesheet" href="main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="dashboard-container admin-grid">
@@ -101,6 +102,9 @@
             <button class="btn-squad" id="btn-admin-disburse">Disburse via Squad</button>
         </div>
 
+         <div style="margin-top: 1rem; padding: 1rem; background: #000; border-radius: 8px;">
+    <canvas id="telemetryChart" width="400" height="150"></canvas>
+</div>
     </div>
     
     <script src="task.js" type="module"></script>
