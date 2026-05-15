@@ -87,10 +87,19 @@
             <hr class="divider">
 
             <h3>Hardware Assignment & Onboarding</h3>
-            <form id="onboard-form" class="form-column">
+           <form id="onboard-form" class="form-column">
                 <input type="text" id="new-owner-name" placeholder="Owner Name" required>
                 <input type="text" id="new-business-name" placeholder="Business Name" required>
-                <input type="text" id="new-device-id" placeholder="Hardware MAC (e.g., ESP32_B2C3)" required>
+                <input type="tel" id="new-phone" placeholder="Phone Number (e.g., 080...)" required>
+                <input type="text" id="new-location" placeholder="Business Address" required>
+                
+                <input type="text" id="new-device-id" placeholder="Hardware MAC (e.g., ESP32_A1B2)" required>
+                
+                <label style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="new-kyc-status" checked style="width: auto; margin: 0;"> 
+                    NIN / KYC Documents Verified
+                </label>
+
                 <button type="submit" class="btn-outline" style="margin-top: 0.5rem;">Register & Pair Hardware</button>
             </form>
             
