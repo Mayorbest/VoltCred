@@ -4,31 +4,37 @@
 // ==========================================
 // 1. CREDENTIALS & IDENTIFICATION
 // ==========================================
-#define WIFI_SSID "Mayowa's Galaxy A04S"
-#define WIFI_PASSWORD "aaaaaaaa"
+#define WIFI_SSID "Redmi 14C"
+#define WIFI_PASSWORD "Skippo23"
 
-// From Firebase Console -> Project Settings -> Service Accounts -> Database Secrets
-#define FIREBASE_HOST "https://voltcred-5d532-default-rtdb.firebaseio.com" 
-#define FIREBASE_AUTH "AIzaSyBjlCkS54cw2C2L0K3k73IRaIxlg4TNDXY"
+#define FIREBASE_HOST "https://voltcred-5d532-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "RyWzupXfhhLoxBibdBQsTXV0G5vEZsSUHyHRTSyK"
 
-String deviceId = "ESP32_A1B2"; // Must match your dashboard!
+String deviceId = "ESP32_A1B2"; // Must match your web dashboard!
 
 // ==========================================
 // 2. HARDWARE WIRING PINS
 // ==========================================
 #define RELAY_PIN 4
-#define VOLTAGE_PIN 34 // Analog pin for ZMPT101B
-#define CURRENT_PIN 35 // Analog pin for ACS712
+#define VOLTAGE_PIN 5 
+#define CURRENT_PIN 6 
 
 // ==========================================
-// 3. CALIBRATION MULTIPLIERS (The Hackathon Cheat Code)
+// 3. RELAY LOGIC FIX (Active Low Configuration)
 // ==========================================
-// Adjust these decimals until your dashboard matches your test load
+// Most 5V relays turn ON when the signal is LOW. 
+// If your specific relay operates normally (HIGH = ON), just swap these two words!
+#define RELAY_ON LOW
+#define RELAY_OFF HIGH
+
+// ==========================================
+// 4. CALIBRATION MULTIPLIERS
+// ==========================================
 float VOLTAGE_CALIBRATION = 0.55; 
 float CURRENT_CALIBRATION = 0.0264; 
 
 // ==========================================
-// 4. GLOBAL OBJECTS
+// 5. GLOBAL OBJECTS
 // ==========================================
 FirebaseData fbData;
 FirebaseAuth auth;
@@ -39,9 +45,9 @@ unsigned long lastTelemetryUpdate = 0;
 void setup() {
   Serial.begin(115200);
   
-  // 1. Setup Relay
+  // 1. Setup Relay Output
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, HIGH); // Default: Power ON
+  digitalWrite(RELAY_PIN, RELAY_ON); // Default to ON so the vendor starts with power
 
   // 2. Connect to WiFi
   Serial.print("Connecting to WiFi");
@@ -61,13 +67,13 @@ void setup() {
 }
 
 // ==========================================
-// 5. CUSTOM AC SAMPLING FUNCTIONS
+// 6. CUSTOM AC SAMPLING FUNCTIONS
 // ==========================================
 float readACVoltage() {
-  uint32_t period = 40; // 40ms captures exactly two 50Hz cycles
+  uint32_t period = 40; 
   uint32_t t_start = millis();
   int max_val = 0;
-  int min_val = 4095; // Max resolution of ESP32 ADC
+  int min_val = 4095; 
 
   while(millis() - t_start < period) {
     int val = analogRead(VOLTAGE_PIN);
@@ -76,7 +82,7 @@ float readACVoltage() {
   }
   
   float peakToPeak = max_val - min_val;
-  return peakToPeak * VOLTAGE_CALIBRATION; // Convert raw wave to RMS Volts
+  return peakToPeak * VOLTAGE_CALIBRATION; 
 }
 
 float readACCurrent() {
@@ -94,7 +100,6 @@ float readACCurrent() {
   float peakToPeak = max_val - min_val;
   float rmsCurrent = peakToPeak * CURRENT_CALIBRATION;
   
-  // Filter out microscopic electrical noise when nothing is plugged in
   if (rmsCurrent < 0.1) rmsCurrent = 0.0; 
   
   return rmsCurrent;
@@ -102,14 +107,18 @@ float readACCurrent() {
 
 void loop() {
   // =========================================================
-  // TASK A: THE KILL SWITCH
+  // TASK A: THE KILL SWITCH (Fixed Logic)
   // =========================================================
   if (Firebase.getInt(fbData, "/devices/" + deviceId + "/relayState")) {
     int state = fbData.intData();
+    
+    // Web Dashboard says 1 (Active) -> Turn Relay ON
     if (state == 1) {
-      digitalWrite(RELAY_PIN, HIGH); 
-    } else {
-      digitalWrite(RELAY_PIN, LOW); 
+      digitalWrite(RELAY_PIN, RELAY_ON); 
+    } 
+    // Web Dashboard says 0 (Defaulted) -> Cut Power
+    else {
+      digitalWrite(RELAY_PIN, RELAY_OFF); 
     }
   }
 
@@ -122,6 +131,19 @@ void loop() {
     // 1. Get raw sensor readings
     float voltage = readACVoltage();
     float current = readACCurrent();
+
+    // ==========================================
+    // THE NOISE GATE (Forces ghost data to zero)
+    // ==========================================
+    // If the AC is cut, any reading under 50 Volts is pure static.
+    if (voltage < 50.0) {
+        voltage = 0.0;
+    }
+    
+    // Any reading under 0.15 Amps is just idle sensor noise.
+    if (current < 0.15) {
+        current = 0.0;
+    }
 
     // 2. The Physics: Power = Voltage * Current
     float power = voltage * current;
